@@ -49,6 +49,7 @@ fun DeveloperModeScreen(navigator: DestinationsNavigator) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
+        //Enable Dev mode.
             ListItem(
                 leadingContent = {
                     Icon(Icons.Filled.DeveloperMode, contentDescription = null)
@@ -77,6 +78,31 @@ fun DeveloperModeScreen(navigator: DestinationsNavigator) {
                     )
                 }
             )
+            // Fake version
+            var fakeVersionEnabled by rememberSaveable {
+    mutableStateOf(prefs.getBoolean("fake_version", false))
+}
+
+ListItem(
+    leadingContent = {
+        Icon(Icons.Filled.Check, contentDescription = null)
+    },
+    headlineContent = {
+        Text("Fake Version")
+    },
+    supportingContent = {
+        Text("Simulate a fake version number for testing purposes")
+    },
+    trailingContent = {
+        Switch(
+            checked = fakeVersionEnabled,
+            onCheckedChange = {
+                fakeVersionEnabled = it
+                prefs.edit().putBoolean("fake_version", it).apply()
+            }
+        )
+    }
+)
         }
     }
 }
