@@ -214,19 +214,23 @@ fun SettingScreen(navigator: DestinationsNavigator) {
                 prefs.edit().putBoolean("check_update", it).apply()
                 checkUpdate = it
             }
-            
-val devModeTitle = stringResource(id = R.string.settings_developer_mode)
+//dev mode of settings            
 ListItem(
     leadingContent = {
         Icon(Icons.Filled.DeveloperMode, contentDescription = null)
     },
-    headlineContent = { Text(devModeTitle) },
+    headlineContent = {
+        Text(stringResource(id = R.string.settings_developer_mode))
+    },
     supportingContent = {
         Text(
-            if (prefs.getBoolean("developer_mode", false))
-                stringResource(id = R.string.enabled)
-            else
-                stringResource(id = R.string.disabled)
+            stringResource(id = R.string.settings_developer_mode_summary) + " · " +
+                    stringResource(
+                        id = if (prefs.getBoolean("developer_mode", false))
+                            R.string.enabled
+                        else
+                            R.string.disabled
+                    )
         )
     },
     modifier = Modifier.clickable {

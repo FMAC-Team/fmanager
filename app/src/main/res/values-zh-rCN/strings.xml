@@ -140,4 +140,6 @@
     <string name="confirm">确认</string>
     <string name="settings_developer_mode">开发者模式</string>
 <string name="settings_developer_mode_summary">启用高级调试选项和实验性功能</string>
+<string name="enabled">已启用</string>
+<string name="disabled">已禁用</string>
 </resources>
