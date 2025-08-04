@@ -6,7 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-//import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.Modifier.alpha
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.DeveloperMode
@@ -85,12 +86,7 @@ fun DeveloperModeScreen(navigator: DestinationsNavigator) {
 }
 
 ListItem(
-    modifier = Modifier
-        .alpha(if (developerMode) 1f else 0.5f), // 视觉变灰
-    enabled = developerMode, // 禁用交互
-    leadingContent = {
-        Icon(Icons.Filled.Check, contentDescription = null)
-    },
+    modifier = Modifier.alpha(if (developerMode) 1f else 0.5f),
     headlineContent = {
         Text("Fake Version")
     },
@@ -102,10 +98,11 @@ ListItem(
             checked = fakeVersionEnabled,
             onCheckedChange = {
                 if (developerMode) {
+                    fakeVersionEnabled = it
                     prefs.edit().putBoolean("fake_version", it).apply()
                 }
             },
-            enabled = developerMode // 禁用 Switch 本身
+            enabled = developerMode
         )
     }
 )
