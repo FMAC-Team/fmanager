@@ -22,7 +22,7 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import me.aqnya.fmac.R
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination<RootGraph>(start = true)
+@Destination<RootGraph>
 @Composable
 fun DeveloperModeScreen(navigator: DestinationsNavigator) {
     val context = LocalContext.current
