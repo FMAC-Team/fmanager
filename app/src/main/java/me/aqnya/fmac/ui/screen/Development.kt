@@ -50,27 +50,31 @@ fun DeveloperModeScreen(navigator: DestinationsNavigator) {
                 .verticalScroll(rememberScrollState())
         ) {
             ListItem(
-                headlineContent = { Text(stringResource(id = R.string.enabled)) },
-                modifier = Modifier.clickable {
-                    developerMode = true
-                    prefs.edit().putBoolean("developer_mode", true).apply()
+                leadingContent = {
+                    Icon(Icons.Filled.DeveloperMode, contentDescription = null)
+                },
+                headlineContent = {
+                    Text(stringResource(id = R.string.settings_developer_mode))
+                },
+                supportingContent = {
+                    Text(
+                        stringResource(id = R.string.settings_developer_mode_summary) + " · " +
+                                stringResource(
+                                    id = if (developerMode)
+                                        R.string.enabled
+                                    else
+                                        R.string.disabled
+                                )
+                    )
                 },
                 trailingContent = {
-                    if (developerMode) {
-                        Icon(Icons.Filled.Check, contentDescription = null)
-                    }
-                }
-            )
-            ListItem(
-                headlineContent = { Text(stringResource(id = R.string.disabled)) },
-                modifier = Modifier.clickable {
-                    developerMode = false
-                    prefs.edit().putBoolean("developer_mode", false).apply()
-                },
-                trailingContent = {
-                    if (!developerMode) {
-                        Icon(Icons.Filled.Check, contentDescription = null)
-                    }
+                    Switch(
+                        checked = developerMode,
+                        onCheckedChange = {
+                            developerMode = it
+                            prefs.edit().putBoolean("developer_mode", it).apply()
+                        }
+                    )
                 }
             )
         }
