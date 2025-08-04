@@ -138,4 +138,6 @@
     <string name="settings_disable_su_summary">临时禁止任何应用通过 su 命令获取 root 权限（已运行的 root 进程不受影响）</string>
     <string name="module_install_prompt_with_name">将安装以下模块：%1$s</string>
     <string name="confirm">确认</string>
+    <string name="settings_developer_mode">开发者模式</string>
+<string name="settings_developer_mode_summary">启用高级调试选项和实验性功能</string>
 </resources>

@@ -213,6 +213,21 @@ fun SettingScreen(navigator: DestinationsNavigator) {
                 prefs.edit().putBoolean("check_update", it).apply()
                 checkUpdate = it
             }
+            
+var developerMode by rememberSaveable {
+    mutableStateOf(
+        prefs.getBoolean("developer_mode", false)
+    )
+}
+SwitchItem(
+    icon = Icons.Filled.Code,
+    title = stringResource(id = R.string.settings_developer_mode),
+    summary = stringResource(id = R.string.settings_developer_mode_summary),
+    checked = developerMode
+) {
+    prefs.edit().putBoolean("developer_mode", it).apply()
+    developerMode = it
+}
 
             var enableWebDebugging by rememberSaveable {
                 mutableStateOf(
