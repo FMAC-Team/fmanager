@@ -80,11 +80,14 @@ fun DeveloperModeScreen(navigator: DestinationsNavigator) {
                 }
             )
             // Fake version
-            var fakeVersionEnabled by rememberSaveable {
+  val fakeVersionEnabled by rememberSaveable {
     mutableStateOf(prefs.getBoolean("fake_version", false))
 }
 
 ListItem(
+    modifier = Modifier
+        .alpha(if (developerMode) 1f else 0.5f), // 视觉变灰
+    enabled = developerMode, // 禁用交互
     leadingContent = {
         Icon(Icons.Filled.Check, contentDescription = null)
     },
@@ -98,9 +101,11 @@ ListItem(
         Switch(
             checked = fakeVersionEnabled,
             onCheckedChange = {
-                fakeVersionEnabled = it
-                prefs.edit().putBoolean("fake_version", it).apply()
-            }
+                if (developerMode) {
+                    prefs.edit().putBoolean("fake_version", it).apply()
+                }
+            },
+            enabled = developerMode // 禁用 Switch 本身
         )
     }
 )
