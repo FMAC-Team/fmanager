@@ -92,6 +92,7 @@ import me.aqnya.fmac.ui.component.rememberLoadingDialog
 import me.aqnya.fmac.ui.util.LocalSnackbarHost
 import me.aqnya.fmac.ui.util.getBugreportFile
 import me.aqnya.fmac.ui.util.shrinkModules
+import me.aqnya.fmac.ui.screen.DeveloperModeScreen
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -214,20 +215,24 @@ fun SettingScreen(navigator: DestinationsNavigator) {
                 checkUpdate = it
             }
             
-var developerMode by rememberSaveable {
-    mutableStateOf(
-        prefs.getBoolean("developer_mode", false)
-    )
-}
-SwitchItem(
-    icon = Icons.Filled.DeveloperMode,
-    title = stringResource(id = R.string.settings_developer_mode),
-    summary = stringResource(id = R.string.settings_developer_mode_summary),
-    checked = developerMode
-) {
-    prefs.edit().putBoolean("developer_mode", it).apply()
-    developerMode = it
-}
+val devModeTitle = stringResource(id = R.string.settings_developer_mode)
+ListItem(
+    leadingContent = {
+        Icon(Icons.Filled.DeveloperMode, contentDescription = null)
+    },
+    headlineContent = { Text(devModeTitle) },
+    supportingContent = {
+        Text(
+            if (prefs.getBoolean("developer_mode", false))
+                stringResource(id = R.string.enabled)
+            else
+                stringResource(id = R.string.disabled)
+        )
+    },
+    modifier = Modifier.clickable {
+        navigator.navigate(DeveloperModeScreenDestination)
+    }
+)
 
             var enableWebDebugging by rememberSaveable {
                 mutableStateOf(
