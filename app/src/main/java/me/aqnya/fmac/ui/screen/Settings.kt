@@ -92,7 +92,7 @@ import me.aqnya.fmac.ui.component.rememberLoadingDialog
 import me.aqnya.fmac.ui.util.LocalSnackbarHost
 import me.aqnya.fmac.ui.util.getBugreportFile
 import me.aqnya.fmac.ui.util.shrinkModules
-import me.aqnya.fmac.ui.screen.DeveloperModeScreen
+import com.ramcosta.composedestinations.generated.destinations.DeveloperModeScreenDestination
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
