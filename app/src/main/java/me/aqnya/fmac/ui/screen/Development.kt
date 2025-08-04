@@ -37,7 +37,7 @@ fun DeveloperModeScreen(navigator: DestinationsNavigator) {
                 title = { Text(stringResource(id = R.string.settings_developer_mode)) },
                 navigationIcon = {
                     IconButton(onClick = { navigator.popBackStack() }) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = null)
                     }
                 }
             )
