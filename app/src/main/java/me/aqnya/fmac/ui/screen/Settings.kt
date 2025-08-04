@@ -230,7 +230,7 @@ ListItem(
         )
     },
     modifier = Modifier.clickable {
-        navigator.navigate(DeveloperModeScreen)
+        navigator.navigate(DeveloperModeScreenDestination)
     }
 )
 
