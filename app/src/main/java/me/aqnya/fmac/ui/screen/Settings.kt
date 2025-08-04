@@ -220,7 +220,7 @@ var developerMode by rememberSaveable {
     )
 }
 SwitchItem(
-    icon = Icons.Filled.Code,
+    icon = Icons.Filled.DeveloperMode,
     title = stringResource(id = R.string.settings_developer_mode),
     summary = stringResource(id = R.string.settings_developer_mode_summary),
     checked = developerMode
