@@ -171,14 +171,14 @@ private fun TopBar(
     TopAppBar(
         title = { Text(stringResource(R.string.app_name)) },
         actions = {
-            if (kernelVersion.isGKI()) {
+       /*     if (kernelVersion.isGKI()) {
                 IconButton(onClick = onInstallClick) {
                     Icon(
                         imageVector = Icons.Filled.Archive,
                         contentDescription = stringResource(id = R.string.install)
                     )
                 }
-            }
+            }*/
 
             var showDropdown by remember { mutableStateOf(false) }
             KsuIsValid() {
