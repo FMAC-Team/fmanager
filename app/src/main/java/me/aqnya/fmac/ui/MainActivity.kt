@@ -44,6 +44,7 @@ import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.utils.isRouteOnBackStackAsState
 import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 import me.aqnya.fmac.Natives
+import android.util.Log
 import me.aqnya.fmac.ksuApp
 import me.aqnya.fmac.ui.screen.BottomBarDestination
 import me.aqnya.fmac.ui.theme.KernelSUTheme
@@ -66,6 +67,10 @@ class MainActivity : ComponentActivity() {
       //  val isManager = Natives.becomeManager(ksuApp.packageName)
         val prefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
 val fakeVersionEnabled = prefs.getBoolean("fake_version", false)
+if (fakeVersionEnabled) {
+Natives.setisfake();
+        val isRoot = Natives.isroot()
+        Log.d("Devmode","Native root check: $isRoot")}
 
 val isManager = if (fakeVersionEnabled) {
     true

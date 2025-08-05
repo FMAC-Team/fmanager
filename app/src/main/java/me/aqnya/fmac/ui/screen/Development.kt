@@ -33,12 +33,12 @@ fun DeveloperModeScreen(navigator: DestinationsNavigator) {
     var developerMode by rememberSaveable {
         mutableStateOf(prefs.getBoolean("developer_mode", false))
     }
-    LaunchedEffect(Unit) {
+/*    LaunchedEffect(Unit) {
     Natives.setisfake();
         val isRoot = Natives.isroot()
         Log.d("Devmode","Native root check: $isRoot")
     }
-
+*/
     
 
     Scaffold(
