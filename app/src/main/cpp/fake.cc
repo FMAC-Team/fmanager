@@ -3,4 +3,4 @@
 #include <stdio.h>
 #include <unistd.h>
 
-extern bool is_fake = false;
+bool is_fake = false;
