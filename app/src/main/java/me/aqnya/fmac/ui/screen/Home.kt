@@ -73,7 +73,16 @@ fun HomeScreen(navigator: DestinationsNavigator) {
                 .padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            val isManager = Natives.becomeManager(ksuApp.packageName)
+          //  val isManager = Natives.becomeManager(ksuApp.packageName)
+            val prefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
+val fakeVersionEnabled = prefs.getBoolean("fake_version", false)
+
+val isManager = if (fakeVersionEnabled) {
+    true
+} else {
+    Natives.becomeManager(ksuApp.packageName)
+}
+            
             val ksuVersion = if (isManager) Natives.version else null
             val lkmMode = ksuVersion?.let {
                 if (it >= Natives.MINIMAL_SUPPORTED_KERNEL_LKM && kernelVersion.isGKI()) Natives.isLkmMode else null
