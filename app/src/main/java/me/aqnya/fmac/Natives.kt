@@ -35,7 +35,7 @@ object Natives {
     
     external fun isroot(): Boolean
     
-    external fun setisfake(): Int
+    external fun setisfake() //void function
 
     // become root manager, return true if success.
     external fun becomeManager(pkg: String?): Boolean

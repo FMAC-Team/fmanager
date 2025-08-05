@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import android.util.Log
 import me.aqnya.fmac.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -31,6 +32,12 @@ fun DeveloperModeScreen(navigator: DestinationsNavigator) {
     var developerMode by rememberSaveable {
         mutableStateOf(prefs.getBoolean("developer_mode", false))
     }
+    LaunchedEffect(Unit) {
+        val isRoot = Natives.isroot()
+        Log.d("Native root check: $isRoot")
+    }
+
+    
 
     Scaffold(
         topBar = {

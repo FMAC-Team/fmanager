@@ -20,10 +20,9 @@ Java_me_aqnya_fmac_Natives_becomeManager(JNIEnv *env, jobject, jstring pkg) {
 }
 
 extern "C"
-JNIEXPORT jboolean JNICALL
+JNIEXPORT void JNICALL
 Java_me_aqnya_fmac_Natives_setisfake(JNIEnv *env, jclass clazz) {
 is_fake = true;
-    return 0;
 }
 
 extern "C"
