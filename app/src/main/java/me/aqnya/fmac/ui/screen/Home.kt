@@ -74,7 +74,8 @@ fun HomeScreen(navigator: DestinationsNavigator) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
           //  val isManager = Natives.becomeManager(ksuApp.packageName)
-            val prefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
+            val context = LocalContext.current
+val prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
 val fakeVersionEnabled = prefs.getBoolean("fake_version", false)
 
 val isManager = if (fakeVersionEnabled) {
