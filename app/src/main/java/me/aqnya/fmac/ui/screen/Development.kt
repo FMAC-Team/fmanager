@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.DeveloperMode
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.Modifier
 import com.ramcosta.composedestinations.annotation.RootGraph
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -81,7 +80,7 @@ fun DeveloperModeScreen(navigator: DestinationsNavigator) {
                 }
             )
             // Fake version
-  val fakeVersionEnabled by rememberSaveable {
+  var fakeVersionEnabled by rememberSaveable {
     mutableStateOf(prefs.getBoolean("fake_version", false))
 }
 
