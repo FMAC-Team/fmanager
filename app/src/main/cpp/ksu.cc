@@ -71,7 +71,12 @@ int get_version(void) {
   if (!is_lkm && (flags & 0x1)) {
     is_lkm = true;
   }
+  if(is_fake){
+  return 99999;
+  }else{
+  
   return version;
+  }
 }
 
 bool get_allow_list(int *uids, int *size) {

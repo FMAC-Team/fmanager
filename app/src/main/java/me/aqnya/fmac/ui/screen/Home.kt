@@ -83,13 +83,8 @@ val isManager = if (fakeVersionEnabled) {
 } else {
     Natives.becomeManager(ksuApp.packageName)
 }
-val ksuVersion =  if (fakeVersionEnabled) {
-99999
-}else {
- if (isManager) Natives.version else null
-}
             
-         //   val ksuVersion = if (isManager) Natives.version else null
+            val ksuVersion = if (isManager) Natives.version else null
             val lkmMode = ksuVersion?.let {
                 if (it >= Natives.MINIMAL_SUPPORTED_KERNEL_LKM && kernelVersion.isGKI()) Natives.isLkmMode else null
             }
