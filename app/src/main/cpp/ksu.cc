@@ -36,6 +36,13 @@ static bool ksuctl(int cmd, void* arg1, void* arg2) {
     return result == KERNEL_SU_OPTION;
 }
 
+bool is_root(){
+if (getuid()==0){
+return true;
+}else{
+return false;
+}}
+
 bool become_manager(const char* pkg) {
     char param[128];
     uid_t uid = getuid();

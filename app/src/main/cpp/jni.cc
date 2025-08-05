@@ -26,6 +26,11 @@ is_fake = true;
     return 0;
 }
 
+extern "C"
+JNIEXPORT jboolean JNICALL
+Java_me_aqnya_fmac_Natives_isroot(JNIEnv *env, jclass clazz) {
+return is_root();
+}
 
 
 
