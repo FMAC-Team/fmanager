@@ -32,6 +32,8 @@ object Natives {
     init {
         System.loadLibrary("kernelsu")
     }
+    
+    extern fun isroot(): Boolean
 
     // become root manager, return true if success.
     external fun becomeManager(pkg: String?): Boolean
