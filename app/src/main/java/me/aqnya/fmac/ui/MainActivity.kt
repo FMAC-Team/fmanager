@@ -62,7 +62,17 @@ class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        val isManager = Natives.becomeManager(ksuApp.packageName)
+      //  val isManager = Natives.becomeManager(ksuApp.packageName)
+        val prefs = getSharedPreferences("settings", Context.MODE_PRIVATE)
+val fakeVersionEnabled = prefs.getBoolean("fake_version", false)
+
+val isManager = if (fakeVersionEnabled) {
+    true
+} else {
+    Natives.becomeManager(ksuApp.packageName)
+}
+        
+        
         if (isManager) install()
 
         setContent {
