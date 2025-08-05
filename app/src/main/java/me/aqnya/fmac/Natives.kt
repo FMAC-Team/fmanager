@@ -92,7 +92,18 @@ object Natives {
     }
 
     fun requireNewKernel(): Boolean {
-        return version < MINIMAL_SUPPORTED_KERNEL
+    val context = LocalContext.current
+val prefs = context.getSharedPreferences("settings", Context.MODE_PRIVATE)
+val fakeVersionEnabled = prefs.getBoolean("fake_version", false)
+
+if (fakeVersionEnabled) {
+   return false
+} else {
+    return version < MINIMAL_SUPPORTED_KERNEL
+}
+    
+    
+        
     }
 
     @Immutable
