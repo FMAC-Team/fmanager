@@ -324,8 +324,8 @@ fun reboot(reason: String = "") {
 }
 
 fun rootAvailable(): Boolean {
-    val shell = getRootShell()
-    return shell.isRoot
+
+    return Natives.isroot()
 }
 
 fun isAbDevice(): Boolean {
