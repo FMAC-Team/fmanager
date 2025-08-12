@@ -195,23 +195,28 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onItemTapped,
-        backgroundColor: colorScheme.surfaceVariant,
-        indicatorColor: colorScheme.primaryContainer,
-        destinations: [
-          NavigationDestination(
-            icon: const Icon(Icons.home_outlined),
-            selectedIcon: const Icon(Icons.home),
-            label: AppLocalizations.tr(context, 'homeTab'),
-          ),
-          NavigationDestination(
-            icon: const Icon(Icons.settings_outlined),
-            selectedIcon: const Icon(Icons.settings),
-            label: AppLocalizations.tr(context, 'settingsTab'),
-          ),
-        ],
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
+        ),
+        child: NavigationBar(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: _onItemTapped,
+          backgroundColor: colorScheme.surfaceVariant,
+          indicatorColor: colorScheme.primaryContainer,
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.home_outlined),
+              selectedIcon: const Icon(Icons.home),
+              label: AppLocalizations.tr(context, 'homeTab'),
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.settings_outlined),
+              selectedIcon: const Icon(Icons.settings),
+              label: AppLocalizations.tr(context, 'settingsTab'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -352,7 +357,9 @@ class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
           ),
           InfoCard(
             title: AppLocalizations.tr(context, 'supportDevelopment'),
-            children: [Text(AppLocalizations.tr(context, 'supportDescription'))],
+            children: [
+              Text(AppLocalizations.tr(context, 'supportDescription')),
+            ],
           ),
           InfoCard(
             title: AppLocalizations.tr(context, 'learnFMAC'),
