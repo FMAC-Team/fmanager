@@ -161,11 +161,19 @@ class _MyHomePageState extends State<MyHomePage> {
         );
       },
       transitionBuilder: (Widget child, Animation<double> animation) {
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
+  return FadeTransition(
+    opacity: animation,
+    child: ScaleTransition(
+      scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+        CurvedAnimation(
+          parent: animation,
+          curve: Curves.easeOut,
+        ),
+      ),
+      child: child,
+    ),
+  );
+},
       child: KeyedSubtree(
   key: ValueKey<int>(_selectedIndex),
   child: _pageBuilders[_selectedIndex](),
