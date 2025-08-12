@@ -352,11 +352,11 @@ class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
           ),
           InfoCard(
             title: AppLocalizations.tr(context, 'supportDevelopment'),
-            children: [Text('FMAC 将保持免费开源，向开发者捐赠以表示支持。')],
+            children: [AppLocalizations.tr(context, 'supportDescription')],
           ),
           InfoCard(
-            title: '了解 FMAC',
-            children: [Text('了解如何使用 FMAC')],
+            title: AppLocalizations.tr(context, 'learnFMAC'),
+            children: [AppLocalizations.tr(context, 'learnDescription'),],
             onTap: () {
               launchWebUrl('https://github.com/aqnya/fmanager');
             },
