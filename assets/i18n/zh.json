@@ -1,0 +1,20 @@
+{
+  "appTitle": "FMAC",
+  "homeTab": "主页",
+  "settingsTab": "设置",
+  "installed": "已安装",
+  "notInstalled": "未安装",
+  "clickToInstall": "点击安装",
+  "kernelVersion": "内核版本",
+  "systemFingerprint": "系统指纹",
+  "selinuxStatus": "SELinux 状态",
+  "supportDevelopment": "支持开发",
+  "supportDescription": "FMAC 将保持免费开源，向开发者捐赠以表示支持。",
+  "learnFMAC": "了解 FMAC",
+  "learnDescription": "了解如何使用 FMAC",
+  "reboot": "重启",
+  "recovery": "恢复模式",
+  "bootloader": "引导程序",
+  "edl": "EDL模式",
+  "restartOptions": "重启选项"
+}

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'l10n/app_localizations.dart';
 import 'status.dart';
 import 'card.dart';
 import 'settings.dart';
@@ -60,6 +62,16 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
     return MaterialApp(
       title: 'FMAC',
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en'),
+        Locale('zh'),
+      ],
       theme: ThemeData(
         colorScheme: lightColorScheme,
         useMaterial3: true,
@@ -92,7 +104,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
-
   final String title;
 
   @override
@@ -107,8 +118,6 @@ class _MyHomePageState extends State<MyHomePage> {
     () => const SettingsPage(key: PageStorageKey('settings')),
   ];
 
-  final List<String> _titles = ['主页', '设置'];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -119,34 +128,36 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    // 动态标题
+    final titles = [
+      AppLocalizations.tr(context, 'homeTab'),
+      AppLocalizations.tr(context, 'settingsTab'),
+    ];
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(_titles[_selectedIndex]),
+        title: Text(titles[_selectedIndex]),
         actions: [
           if (_selectedIndex == 0)
             PopupMenuButton<String>(
               icon: const Icon(Icons.restart_alt),
-              tooltip: '重启选项',
-              onSelected: (String value) {
-                switch (value) {
-                  case 'reboot':
-                    break;
-                  case 'recovery':
-                    break;
-                  case 'bootloader':
-                    break;
-                  case 'edl':
-                    break;
-                }
-              },
-              itemBuilder: (BuildContext context) => const [
-                PopupMenuItem(value: 'reboot', child: Text('重启')),
-                PopupMenuItem(value: 'recovery', child: Text('重启到 Recovery')),
+              tooltip: AppLocalizations.tr(context, 'rebootOptions'),
+              onSelected: (String value) {},
+              itemBuilder: (BuildContext context) => [
                 PopupMenuItem(
-                  value: 'bootloader',
-                  child: Text('重启到 BootLoader'),
-                ),
-                PopupMenuItem(value: 'edl', child: Text('重启到 EDL')),
+                    value: 'reboot',
+                    child: Text(AppLocalizations.tr(context, 'reboot'))),
+                PopupMenuItem(
+                    value: 'recovery',
+                    child:
+                        Text(AppLocalizations.tr(context, 'rebootToRecovery'))),
+                PopupMenuItem(
+                    value: 'bootloader',
+                    child: Text(
+                        AppLocalizations.tr(context, 'rebootToBootloader'))),
+                PopupMenuItem(
+                    value: 'edl',
+                    child: Text(AppLocalizations.tr(context, 'rebootToEDL'))),
               ],
             ),
         ],
@@ -157,26 +168,6 @@ class _MyHomePageState extends State<MyHomePage> {
           duration: const Duration(milliseconds: 125),
           switchInCurve: Curves.easeIn,
           switchOutCurve: Curves.easeOut,
-          layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
-            return Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                ...previousChildren,
-                if (currentChild != null) currentChild,
-              ],
-            );
-          },
-          transitionBuilder: (Widget child, Animation<double> animation) {
-            return FadeTransition(
-              opacity: animation,
-              child: ScaleTransition(
-                scale: Tween<double>(begin: 0.95, end: 1.0).animate(
-                  CurvedAnimation(parent: animation, curve: Curves.easeOut),
-                ),
-                child: child,
-              ),
-            );
-          },
           child: KeyedSubtree(
             key: ValueKey<int>(_selectedIndex),
             child: _pageBuilders[_selectedIndex](),
@@ -188,17 +179,16 @@ class _MyHomePageState extends State<MyHomePage> {
         onDestinationSelected: _onItemTapped,
         backgroundColor: colorScheme.surfaceVariant,
         indicatorColor: colorScheme.primaryContainer,
-        surfaceTintColor: Colors.transparent,
-        destinations: const [
+        destinations: [
           NavigationDestination(
-            icon: Icon(Icons.home_outlined),
-            selectedIcon: Icon(Icons.home),
-            label: '主页',
+            icon: const Icon(Icons.home_outlined),
+            selectedIcon: const Icon(Icons.home),
+            label: AppLocalizations.tr(context, 'homeTab'),
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
-            label: '设置',
+            icon: const Icon(Icons.settings_outlined),
+            selectedIcon: const Icon(Icons.settings),
+            label: AppLocalizations.tr(context, 'settingsTab'),
           ),
         ],
       ),

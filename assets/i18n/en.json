@@ -1,0 +1,20 @@
+{
+  "appTitle": "FMAC",
+  "homeTab": "Home",
+  "settingsTab": "Settings",
+  "installed": "Installed",
+  "notInstalled": "Not installed",
+  "clickToInstall": "Click to install",
+  "kernelVersion": "Kernel version",
+  "systemFingerprint": "System fingerprint",
+  "selinuxStatus": "SELinux status",
+  "supportDevelopment": "Support development",
+  "supportDescription": "FMAC will remain free and open source, donate to developers to show your support.",
+  "learnFMAC": "Learn about FMAC",
+  "learnDescription": "Learn how to use FMAC",
+  "reboot": "Reboot",
+  "recovery": "Recovery",
+  "bootloader": "Bootloader",
+  "edl": "EDL",
+  "restartOptions": "Restart options"
+}
