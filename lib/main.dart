@@ -147,17 +147,17 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 PopupMenuItem(
                   value: 'recovery',
-                  child: Text(AppLocalizations.tr(context, 'rebootToRecovery')),
+                  child: Text(AppLocalizations.tr(context, 'recovery')),
                 ),
                 PopupMenuItem(
                   value: 'bootloader',
                   child: Text(
-                    AppLocalizations.tr(context, 'rebootToBootloader'),
+                    AppLocalizations.tr(context, 'bootloader'),
                   ),
                 ),
                 PopupMenuItem(
                   value: 'edl',
-                  child: Text(AppLocalizations.tr(context, 'rebootToEDL')),
+                  child: Text(AppLocalizations.tr(context, 'edl')),
                 ),
               ],
             ),
