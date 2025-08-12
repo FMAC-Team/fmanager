@@ -1,6 +1,7 @@
 name: Build manager
 on:
   push:
+  workflow_dispatch:
 
 jobs:
   build:
