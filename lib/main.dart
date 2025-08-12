@@ -351,7 +351,7 @@ class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
             ],
           ),
           InfoCard(
-            title: '支持开发',
+            title: AppLocalizations.tr(context, 'supportDevelopment'),,
             children: [Text('FMAC 将保持免费开源，向开发者捐赠以表示支持。')],
           ),
           InfoCard(
