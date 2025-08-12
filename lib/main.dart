@@ -103,9 +103,9 @@ class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
   final List<Widget Function()> _pageBuilders = [
-  () => const KernelSUHomePageContent(key: PageStorageKey('home')),
-  () => const SettingsPage(key: PageStorageKey('settings')),
-];
+    () => const KernelSUHomePageContent(key: PageStorageKey('home')),
+    () => const SettingsPage(key: PageStorageKey('settings')),
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -118,100 +118,98 @@ class _MyHomePageState extends State<MyHomePage> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-  appBar: AppBar(
-    title: Text(widget.title),
-    actions: [
-      PopupMenuButton<String>(
-        icon: const Icon(Icons.restart_alt),
-        tooltip: '重启选项',
-        onSelected: (String value) {
-          switch (value) {
-            case 'reboot':
-              break;
-            case 'recovery':
-              break;
-            case 'bootloader':
-              break;
-            case 'edl':
-              break;
-          }
-        },
-        itemBuilder: (BuildContext context) => const [
-          PopupMenuItem(value: 'reboot', child: Text('重启')),
-          PopupMenuItem(value: 'recovery', child: Text('重启到 Recovery')),
-          PopupMenuItem(value: 'bootloader', child: Text('重启到 BootLoader')),
-          PopupMenuItem(value: 'edl', child: Text('重启到 EDL')),
+      appBar: AppBar(
+        title: Text(widget.title),
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.restart_alt),
+            tooltip: '重启选项',
+            onSelected: (String value) {
+              switch (value) {
+                case 'reboot':
+                  break;
+                case 'recovery':
+                  break;
+                case 'bootloader':
+                  break;
+                case 'edl':
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => const [
+              PopupMenuItem(value: 'reboot', child: Text('重启')),
+              PopupMenuItem(value: 'recovery', child: Text('重启到 Recovery')),
+              PopupMenuItem(value: 'bootloader', child: Text('重启到 BootLoader')),
+              PopupMenuItem(value: 'edl', child: Text('重启到 EDL')),
+            ],
+          ),
         ],
       ),
-    ],
-  ),
-  body: PageStorage(
-    bucket: PageStorageBucket(),
-    child: AnimatedSwitcher(
-      duration: const Duration(milliseconds: 125),
-      switchInCurve: Curves.easeIn,
-      switchOutCurve: Curves.easeOut,
-      layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
-        return Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            ...previousChildren,
-            if (currentChild != null) currentChild,
-          ],
-        );
-      },
-      transitionBuilder: (Widget child, Animation<double> animation) {
-  return FadeTransition(
-    opacity: animation,
-    child: ScaleTransition(
-      scale: Tween<double>(begin: 0.95, end: 1.0).animate(
-        CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeOut,
+      body: PageStorage(
+        bucket: PageStorageBucket(),
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 125),
+          switchInCurve: Curves.easeIn,
+          switchOutCurve: Curves.easeOut,
+          layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
+            return Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                ...previousChildren,
+                if (currentChild != null) currentChild,
+              ],
+            );
+          },
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                ),
+                child: child,
+              ),
+            );
+          },
+          child: KeyedSubtree(
+            key: ValueKey<int>(_selectedIndex),
+            child: _pageBuilders[_selectedIndex](),
+          ),
         ),
       ),
-      child: child,
-    ),
-  );
-},
-      child: KeyedSubtree(
-  key: ValueKey<int>(_selectedIndex),
-  child: _pageBuilders[_selectedIndex](),
-),
-    ),
-  ),
-  bottomNavigationBar: NavigationBar(
-  selectedIndex: _selectedIndex,
-  onDestinationSelected: _onItemTapped,
-  backgroundColor: colorScheme.surfaceVariant,
-  indicatorColor: colorScheme.primaryContainer,
-  surfaceTintColor: Colors.transparent,
-  destinations: const [
-    NavigationDestination(
-      icon: Icon(Icons.home_outlined),
-      selectedIcon: Icon(Icons.home),
-      label: '主页',
-    ),
-    NavigationDestination(
-      icon: Icon(Icons.settings_outlined),
-      selectedIcon: Icon(Icons.settings),
-      label: '设置',
-    ),
-  ],
-),
-);
-}}
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: _onItemTapped,
+        backgroundColor: colorScheme.surfaceVariant,
+        indicatorColor: colorScheme.primaryContainer,
+        surfaceTintColor: Colors.transparent,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home),
+            label: '主页',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: '设置',
+          ),
+        ],
+      ),
+    );
+  }
+}
 
 class KernelSUHomePageContent extends StatefulWidget {
   const KernelSUHomePageContent({super.key});
 
   @override
-  State<KernelSUHomePageContent> createState() => _KernelSUHomePageContentState();
+  State<KernelSUHomePageContent> createState() =>
+      _KernelSUHomePageContentState();
 }
 
 class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
     with AutomaticKeepAliveClientMixin {
-
   String _kernelVersion = '加载中...';
   String _SELinuxStatus = 'Loading';
   String _Fingerprint = 'Loading';
@@ -262,8 +260,9 @@ class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('无法打开链接: $e')));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('无法打开链接: $e')));
       }
     }
   }
