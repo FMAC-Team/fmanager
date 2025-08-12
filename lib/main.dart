@@ -68,10 +68,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('zh'),
-      ],
+      supportedLocales: const [Locale('en'), Locale('zh')],
       theme: ThemeData(
         colorScheme: lightColorScheme,
         useMaterial3: true,
@@ -145,19 +142,23 @@ class _MyHomePageState extends State<MyHomePage> {
               onSelected: (String value) {},
               itemBuilder: (BuildContext context) => [
                 PopupMenuItem(
-                    value: 'reboot',
-                    child: Text(AppLocalizations.tr(context, 'reboot'))),
+                  value: 'reboot',
+                  child: Text(AppLocalizations.tr(context, 'reboot')),
+                ),
                 PopupMenuItem(
-                    value: 'recovery',
-                    child:
-                        Text(AppLocalizations.tr(context, 'rebootToRecovery'))),
+                  value: 'recovery',
+                  child: Text(AppLocalizations.tr(context, 'rebootToRecovery')),
+                ),
                 PopupMenuItem(
-                    value: 'bootloader',
-                    child: Text(
-                        AppLocalizations.tr(context, 'rebootToBootloader'))),
+                  value: 'bootloader',
+                  child: Text(
+                    AppLocalizations.tr(context, 'rebootToBootloader'),
+                  ),
+                ),
                 PopupMenuItem(
-                    value: 'edl',
-                    child: Text(AppLocalizations.tr(context, 'rebootToEDL'))),
+                  value: 'edl',
+                  child: Text(AppLocalizations.tr(context, 'rebootToEDL')),
+                ),
               ],
             ),
         ],
@@ -168,6 +169,26 @@ class _MyHomePageState extends State<MyHomePage> {
           duration: const Duration(milliseconds: 125),
           switchInCurve: Curves.easeIn,
           switchOutCurve: Curves.easeOut,
+          layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
+            return Stack(
+              fit: StackFit.expand,
+              children: <Widget>[
+                ...previousChildren,
+                if (currentChild != null) currentChild,
+              ],
+            );
+          },
+          transitionBuilder: (Widget child, Animation<double> animation) {
+            return FadeTransition(
+              opacity: animation,
+              child: ScaleTransition(
+                scale: Tween<double>(begin: 0.95, end: 1.0).animate(
+                  CurvedAnimation(parent: animation, curve: Curves.easeOut),
+                ),
+                child: child,
+              ),
+            );
+          },
           child: KeyedSubtree(
             key: ValueKey<int>(_selectedIndex),
             child: _pageBuilders[_selectedIndex](),
