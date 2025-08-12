@@ -356,7 +356,7 @@ class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
           ),
           InfoCard(
             title: AppLocalizations.tr(context, 'learnFMAC'),
-            children: [AppLocalizations.tr(context, 'learnDescription'),],
+            children: [AppLocalizations.tr(context, 'learnDescription')],
             onTap: () {
               launchWebUrl('https://github.com/aqnya/fmanager');
             },
