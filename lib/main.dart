@@ -107,6 +107,8 @@ class _MyHomePageState extends State<MyHomePage> {
     () => const SettingsPage(key: PageStorageKey('settings')),
   ];
 
+  final List<String> _titles = ['主页', '设置'];
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -119,30 +121,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(_titles[_selectedIndex]),
         actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.restart_alt),
-            tooltip: '重启选项',
-            onSelected: (String value) {
-              switch (value) {
-                case 'reboot':
-                  break;
-                case 'recovery':
-                  break;
-                case 'bootloader':
-                  break;
-                case 'edl':
-                  break;
-              }
-            },
-            itemBuilder: (BuildContext context) => const [
-              PopupMenuItem(value: 'reboot', child: Text('重启')),
-              PopupMenuItem(value: 'recovery', child: Text('重启到 Recovery')),
-              PopupMenuItem(value: 'bootloader', child: Text('重启到 BootLoader')),
-              PopupMenuItem(value: 'edl', child: Text('重启到 EDL')),
-            ],
-          ),
+          if (_selectedIndex == 0)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.restart_alt),
+              tooltip: '重启选项',
+              onSelected: (String value) {
+                switch (value) {
+                  case 'reboot':
+                    break;
+                  case 'recovery':
+                    break;
+                  case 'bootloader':
+                    break;
+                  case 'edl':
+                    break;
+                }
+              },
+              itemBuilder: (BuildContext context) => const [
+                PopupMenuItem(value: 'reboot', child: Text('重启')),
+                PopupMenuItem(value: 'recovery', child: Text('重启到 Recovery')),
+                PopupMenuItem(
+                  value: 'bootloader',
+                  child: Text('重启到 BootLoader'),
+                ),
+                PopupMenuItem(value: 'edl', child: Text('重启到 EDL')),
+              ],
+            ),
         ],
       ),
       body: PageStorage(
