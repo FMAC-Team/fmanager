@@ -109,23 +109,25 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
+  final PageStorageBucket _bucket = PageStorageBucket();
 
-  final List<Widget Function()> _pageBuilders = [
-    () => const KernelSUHomePageContent(key: PageStorageKey('home')),
-    () => const SettingsPage(key: PageStorageKey('settings')),
+  final List<Widget> _pages = const [
+    KernelSUHomePageContent(key: PageStorageKey('home')),
+    SettingsPage(key: PageStorageKey('settings')),
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    if (_selectedIndex != index) {
+      setState(() {
+        _selectedIndex = index;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    // 动态标题
     final titles = [
       AppLocalizations.tr(context, 'homeTab'),
       AppLocalizations.tr(context, 'settingsTab'),
@@ -151,9 +153,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 PopupMenuItem(
                   value: 'bootloader',
-                  child: Text(
-                    AppLocalizations.tr(context, 'bootloader'),
-                  ),
+                  child: Text(AppLocalizations.tr(context, 'bootloader')),
                 ),
                 PopupMenuItem(
                   value: 'edl',
@@ -164,34 +164,24 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
       body: PageStorage(
-        bucket: PageStorageBucket(),
+        bucket: _bucket,
         child: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 125),
-          switchInCurve: Curves.easeIn,
-          switchOutCurve: Curves.easeOut,
-          layoutBuilder: (Widget? currentChild, List<Widget> previousChildren) {
-            return Stack(
-              fit: StackFit.expand,
-              children: <Widget>[
-                ...previousChildren,
-                if (currentChild != null) currentChild,
-              ],
-            );
-          },
+          duration: const Duration(milliseconds: 200),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
           transitionBuilder: (Widget child, Animation<double> animation) {
             return FadeTransition(
               opacity: animation,
               child: ScaleTransition(
-                scale: Tween<double>(begin: 0.95, end: 1.0).animate(
-                  CurvedAnimation(parent: animation, curve: Curves.easeOut),
-                ),
+                scale: Tween<double>(begin: 0.97, end: 1.0).animate(animation),
                 child: child,
               ),
             );
           },
-          child: KeyedSubtree(
+          child: IndexedStack(
             key: ValueKey<int>(_selectedIndex),
-            child: _pageBuilders[_selectedIndex](),
+            index: _selectedIndex,
+            children: _pages,
           ),
         ),
       ),
@@ -292,7 +282,6 @@ class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return SingleChildScrollView(
@@ -308,10 +297,7 @@ class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
               padding: const EdgeInsets.all(16.0),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.warning_amber,
-                    color: colorScheme.onErrorContainer,
-                  ),
+                  Icon(Icons.warning_amber, color: colorScheme.onErrorContainer),
                   const SizedBox(width: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,10 +333,8 @@ class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
               const SizedBox(height: 8),
               Text(_Fingerprint),
               const SizedBox(height: 16),
-              Text(
-                'SELinux 状态',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
+              Text('SELinux 状态',
+                  style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
               Text(_SELinuxStatus),
             ],
