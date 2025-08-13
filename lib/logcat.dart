@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 
 class LogcatPage extends StatefulWidget {
   const LogcatPage({super.key});
@@ -45,12 +46,16 @@ class _LogcatPageState extends State<LogcatPage> {
           _logLines.addAll(data.split('\n').where((line) => line.trim().isNotEmpty));
         });
 
-        // 自动滚动到底部
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (_scrollController.hasClients) {
-            _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-          }
-        });
+        // 自动平滑滚动到底部
+        if (_scrollController.hasClients) {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+            );
+          });
+        }
       });
 
       await _logcatProcess!.exitCode;
@@ -68,59 +73,48 @@ class _LogcatPageState extends State<LogcatPage> {
     _startLogcat();
   }
 
-Future<void> _exportLogs() async {
-  if (_logLines.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('没有日志可导出')),
-    );
-    return;
-  }
-
-  setState(() => _isExporting = true);
-
-  try {
-
-    final exportDir = await getExternalStorageDirectory();
-    if (exportDir == null) {
+  Future<void> _exportLogs() async {
+    if (_logLines.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('没有日志可导出')),
+      );
       return;
     }
 
-    final timestamp = DateTime.now().toIso8601String().replaceAll(RegExp(r'[:.]'), '-');
-    final file = File('${exportDir.path}/logcat_$timestamp.txt');
+    setState(() => _isExporting = true);
 
-    // 写入日志
-    await file.writeAsString(_logLines.join('\n'));
+    try {
+      // 获取公共 Downloads 目录
+      final downloadDir = Directory('/storage/emulated/0/Download');
+      if (!downloadDir.existsSync()) {
+        await downloadDir.create(recursive: true);
+      }
 
-    // 弹出操作提示
-    await _showExportOptions(file);
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('导出失败: $e')),
-    );
-  } finally {
-    setState(() => _isExporting = false);
+      final timestamp = DateTime.now().toIso8601String().replaceAll(RegExp(r'[:.]'), '-');
+      final file = File(p.join(downloadDir.path, 'logcat_$timestamp.txt'));
+
+      await file.writeAsString(_logLines.join('\n'));
+
+      await _showExportOptions(file);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('导出失败: $e')),
+      );
+    } finally {
+      setState(() => _isExporting = false);
+    }
   }
-}
 
   Future<void> _showExportOptions(File file) async {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('导出日志'),
-        content: const Text('是否导出日志到默认路径？'),
+        content: Text('日志已保存到:\n${file.path}'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
-          ),
-          TextButton(
-            onPressed: () async {
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('已保存到: ${file.path}')),
-              );
-            },
-            child: const Text('保存'),
+            child: const Text('确定'),
           ),
         ],
       ),
@@ -136,7 +130,7 @@ Future<void> _exportLogs() async {
         title: const Text('Logcat 日志'),
         actions: [
           IconButton(
-            icon: _isExporting 
+            icon: _isExporting
                 ? const SizedBox(
                     width: 20,
                     height: 20,
@@ -161,9 +155,9 @@ Future<void> _exportLogs() async {
                   controller: _scrollController,
                   itemCount: _logLines.length,
                   itemBuilder: (context, index) {
-                    String line = _logLines[index];
+                    final line = _logLines[index];
                     Color textColor = colorScheme.onBackground;
-                    
+
                     if (line.contains(' E ')) {
                       textColor = Colors.red;
                     } else if (line.contains(' W ')) {
@@ -171,10 +165,13 @@ Future<void> _exportLogs() async {
                     } else if (line.contains(' I ')) {
                       textColor = Colors.blue;
                     }
-                    
-                    return Padding(
+
+                    return Container(
+                      color: index.isEven
+                          ? colorScheme.surfaceVariant.withOpacity(0.1)
+                          : Colors.transparent,
                       padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                      child: Text(
+                      child: SelectableText(
                         line,
                         style: TextStyle(
                           fontFamily: 'monospace',
