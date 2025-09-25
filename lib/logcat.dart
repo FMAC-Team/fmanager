@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 
 class LogcatPage extends StatefulWidget {
@@ -16,6 +17,7 @@ class _LogcatPageState extends State<LogcatPage> {
   Process? _logcatProcess;
   bool _isLoading = true;
   bool _isExporting = false;
+  bool _autoScroll = true;
 
   @override
   void initState() {
@@ -42,15 +44,21 @@ class _LogcatPageState extends State<LogcatPage> {
 
       _logcatProcess!.stdout.transform(SystemEncoding().decoder).listen((data) {
         setState(() {
-          _logLines.addAll(data.split('\n').where((line) => line.trim().isNotEmpty));
+          _logLines.addAll(
+            data.split('\n').where((line) => line.trim().isNotEmpty),
+          );
         });
 
         // 自动滚动到底部
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (_scrollController.hasClients) {
-            _scrollController.jumpTo(_scrollController.position.maxScrollExtent);
-          }
-        });
+        if (_autoScroll) {
+          Future.delayed(const Duration(milliseconds: 100), () {
+            if (_scrollController.hasClients) {
+              _scrollController.jumpTo(
+                _scrollController.position.maxScrollExtent,
+              );
+            }
+          });
+        }
       });
 
       await _logcatProcess!.exitCode;
@@ -68,59 +76,57 @@ class _LogcatPageState extends State<LogcatPage> {
     _startLogcat();
   }
 
-Future<void> _exportLogs() async {
-  if (_logLines.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('没有日志可导出')),
-    );
-    return;
-  }
-
-  setState(() => _isExporting = true);
-
-  try {
-
-    final exportDir = await getExternalStorageDirectory();
-    if (exportDir == null) {
+  Future<void> _exportLogs() async {
+    if (_logLines.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('没有日志可导出')),
+      );
       return;
     }
 
-    final timestamp = DateTime.now().toIso8601String().replaceAll(RegExp(r'[:.]'), '-');
-    final file = File('${exportDir.path}/logcat_$timestamp.txt');
+    setState(() => _isExporting = true);
 
-    // 写入日志
-    await file.writeAsString(_logLines.join('\n'));
+    try {
+      final exportDir = await getExternalStorageDirectory();
+      if (exportDir == null) return;
 
-    // 弹出操作提示
-    await _showExportOptions(file);
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('导出失败: $e')),
-    );
-  } finally {
-    setState(() => _isExporting = false);
+      final timestamp = DateTime.now()
+          .toIso8601String()
+          .replaceAll(RegExp(r'[:.]'), '-');
+      final file = File('${exportDir.path}/logcat_$timestamp.txt');
+
+      await file.writeAsString(_logLines.join('\n'));
+
+      await _showExportOptions(file);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('导出失败: $e')),
+      );
+    } finally {
+      setState(() => _isExporting = false);
+    }
   }
-}
 
   Future<void> _showExportOptions(File file) async {
     return showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('导出日志'),
-        content: const Text('是否导出日志到默认路径？'),
+        content: Text('日志已保存到:\n${file.path}'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text('取消'),
+            child: const Text('关闭'),
           ),
-          TextButton(
-            onPressed: () async {
+          FilledButton(
+            onPressed: () {
               Navigator.pop(context);
+              Clipboard.setData(ClipboardData(text: file.path));
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('已保存到: ${file.path}')),
+                const SnackBar(content: Text('路径已复制')),
               );
             },
-            child: const Text('保存'),
+            child: const Text('复制路径'),
           ),
         ],
       ),
@@ -136,7 +142,7 @@ Future<void> _exportLogs() async {
         title: const Text('Logcat 日志'),
         actions: [
           IconButton(
-            icon: _isExporting 
+            icon: _isExporting
                 ? const SizedBox(
                     width: 20,
                     height: 20,
@@ -151,19 +157,41 @@ Future<void> _exportLogs() async {
             onPressed: _refresh,
             tooltip: '刷新日志',
           ),
+          PopupMenuButton<String>(
+            onSelected: (value) {
+              if (value == 'error') {
+                setState(() =>
+                    _logLines.retainWhere((l) => l.contains(' E ')));
+              } else if (value == 'all') {
+                _refresh();
+              }
+            },
+            itemBuilder: (context) => [
+              const PopupMenuItem(
+                value: 'error',
+                child: Text('仅显示错误'),
+              ),
+              const PopupMenuItem(
+                value: 'all',
+                child: Text('显示全部'),
+              ),
+            ],
+          ),
         ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _logLines.isEmpty
               ? const Center(child: Text('暂无日志输出'))
-              : ListView.builder(
+              : ListView.separated(
                   controller: _scrollController,
                   itemCount: _logLines.length,
+                  separatorBuilder: (_, __) =>
+                      Divider(height: 0.5, color: colorScheme.outlineVariant),
                   itemBuilder: (context, index) {
-                    String line = _logLines[index];
+                    final line = _logLines[index];
                     Color textColor = colorScheme.onBackground;
-                    
+
                     if (line.contains(' E ')) {
                       textColor = Colors.red;
                     } else if (line.contains(' W ')) {
@@ -171,10 +199,11 @@ Future<void> _exportLogs() async {
                     } else if (line.contains(' I ')) {
                       textColor = Colors.blue;
                     }
-                    
+
                     return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                      child: Text(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 2),
+                      child: SelectableText(
                         line,
                         style: TextStyle(
                           fontFamily: 'monospace',
@@ -186,34 +215,50 @@ Future<void> _exportLogs() async {
                   },
                 ),
       bottomNavigationBar: _logLines.isNotEmpty
-          ? Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          ? BottomAppBar(
               color: colorScheme.surfaceVariant,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '共 ${_logLines.length} 条日志',
-                    style: const TextStyle(fontSize: 14),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: Text(
+                      '共 ${_logLines.length} 条日志',
+                      style: const TextStyle(fontSize: 14),
+                    ),
                   ),
                   Row(
                     children: [
-                      TextButton(
+                      IconButton(
+                        icon: Icon(
+                          _autoScroll
+                              ? Icons.arrow_downward
+                              : Icons.arrow_downward_outlined,
+                        ),
+                        tooltip: _autoScroll ? '关闭自动滚动' : '开启自动滚动',
+                        onPressed: () =>
+                            setState(() => _autoScroll = !_autoScroll),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.filter_alt),
+                        tooltip: '保留最近1000条',
                         onPressed: _logLines.length > 1000
                             ? () {
                                 setState(() {
-                                  _logLines.removeRange(0, _logLines.length - 1000);
+                                  _logLines.removeRange(
+                                      0, _logLines.length - 1000);
                                 });
                               }
                             : null,
-                        child: const Text('保留最近1000条'),
                       ),
-                      TextButton(
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        tooltip: '清空日志',
                         onPressed: () => setState(() => _logLines.clear()),
-                        child: const Text('清空日志'),
                       ),
                     ],
-                  ),
+                  )
                 ],
               ),
             )
