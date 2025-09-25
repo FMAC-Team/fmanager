@@ -58,11 +58,20 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final darkColorScheme = _getColorScheme(Brightness.dark);
     final useDark = _platformBrightness == Brightness.dark;
 
+
     return MaterialApp(
       title: 'FMAC',
       theme: ThemeData(
         colorScheme: lightColorScheme,
         useMaterial3: true,
+        pageTransitionsTheme: PageTransitionsTheme(
+      builders: {
+        TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+          transitionType: SharedAxisTransitionType.scaled,
+        ),
+        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+      },
+    ),
         appBarTheme: AppBarTheme(
           backgroundColor: lightColorScheme.surface,
           foregroundColor: lightColorScheme.onSurface,
