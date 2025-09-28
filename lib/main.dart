@@ -351,7 +351,7 @@ class _KernelSUHomePageContentState extends State<KernelSUHomePageContent>
             title: '了解 FMAC',
             children: [Text('了解如何使用 FMAC')],
             onTap: () {
-              launchWebUrl('https://github.com/aqnya/fmanager');
+              launchWebUrl('https://github.com/aqnya/nekosu');
             },
           ),
         ],
