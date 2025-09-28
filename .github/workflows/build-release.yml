@@ -1,0 +1,30 @@
+name: Build manager
+on:
+  push:
+
+jobs:
+  build:
+    name: Build manager
+    runs-on: ubuntu-24.04
+    env:
+      CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
+      CCACHE_NOHASHDIR: "true"
+      CCACHE_HARDLINK: "true"
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v4
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: 3.32.8
+    - name: Build apk
+      run: |
+          echo "BUILD_TIME=$(TZ=Asia/Shanghai date "+%Y%m%d%H%M")" >> $GITHUB_ENV
+          flutter pub get
+          flutter build apk --release --split-per-abi
+         
+    - name: Upload project
+      uses: actions/upload-artifact@v4
+      with:
+        name: apprelease-${{ env.BUILD_TIME }}
+        path: ${{ github.workspace }}/build/app/outputs/flutter-apk/app-release.apk
