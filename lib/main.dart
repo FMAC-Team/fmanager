@@ -37,7 +37,7 @@ class App extends StatelessWidget {
 
         return ValueListenableBuilder<Brightness>(
           // 让下方 MyApp 继续监听系统亮度变化
-          valueListenable: _MyAppState.brightnessListenable,
+          valueListenable: MyApp.brightnessListenable,
           builder: (_, brightness, __) {
             final useDark = brightness == Brightness.dark;
             return MaterialApp(
