@@ -1,10 +1,10 @@
 name: Build manager
 on:
-  push:
+  workflow_dispatch:
 
 jobs:
   build:
-    name: Build manager
+    name: Build release
     runs-on: ubuntu-24.04
     env:
       CCACHE_COMPILERCHECK: "%compiler% -dumpmachine; %compiler% -dumpversion"
