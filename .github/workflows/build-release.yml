@@ -27,4 +27,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: apprelease-${{ env.BUILD_TIME }}
-        path: ${{ github.workspace }}/build/app/outputs/flutter-apk/app-release.apk
+        path: ${{ github.workspace }}/build/app/outputs/flutter-apk/*.apk
