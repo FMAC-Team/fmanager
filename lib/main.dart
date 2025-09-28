@@ -8,15 +8,13 @@ import 'card.dart';
 import 'settings.dart';
 import 'mcl.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  final seedColor = await AccentColorFetcher.getAccentColor();
-  runApp(MyApp(seedColor));
+  runApp(const MyApp());          // 1. 不再传入 seedColor
 }
 
 class MyApp extends StatefulWidget {
-  final Color seedColor;
-  const MyApp(this.seedColor, {super.key});
+  const MyApp({super.key});       // 2. 去掉 seedColor 参数
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -26,9 +24,12 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Brightness _platformBrightness =
       WidgetsBinding.instance.platformDispatcher.platformBrightness;
 
+  /* 3. 自己写一个默认种子色，想换颜色改这里即可 */
+  static const Color _defaultSeedColor = Colors.deepPurple;
+
   ColorScheme _getColorScheme(Brightness brightness) {
     return ColorScheme.fromSeed(
-      seedColor: widget.seedColor,
+      seedColor: _defaultSeedColor, // 使用固定种子色
       brightness: brightness,
     );
   }
@@ -59,20 +60,19 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     final darkColorScheme = _getColorScheme(Brightness.dark);
     final useDark = _platformBrightness == Brightness.dark;
 
-
     return MaterialApp(
       title: 'FMAC',
       theme: ThemeData(
         colorScheme: lightColorScheme,
         useMaterial3: true,
         pageTransitionsTheme: PageTransitionsTheme(
-      builders: {
-        TargetPlatform.android: SharedAxisPageTransitionsBuilder(
-          transitionType: SharedAxisTransitionType.scaled,
+          builders: {
+            TargetPlatform.android: SharedAxisPageTransitionsBuilder(
+              transitionType: SharedAxisTransitionType.scaled,
+            ),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          },
         ),
-        TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-      },
-    ),
         appBarTheme: AppBarTheme(
           backgroundColor: lightColorScheme.surface,
           foregroundColor: lightColorScheme.onSurface,
@@ -100,6 +100,7 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   }
 }
 
+/* ====== 以下代码完全不变 ====== */
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
